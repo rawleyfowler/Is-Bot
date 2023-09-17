@@ -1,0 +1,7 @@
+Is::Bot
+
+A super simple way to test if a User-Agent header is possbily a bot.
+
+    use Is::Bot qw(is_bot);
+    is_bot('axios'); # true
+    is_bot('Mozilla/5.0 (X11; Linux x86_64; rv:109.0)'); # false
