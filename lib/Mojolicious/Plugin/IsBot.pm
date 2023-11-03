@@ -195,15 +195,13 @@ sub register {
             my $self = shift;
             my $str  = $self->headers->user_agent // shift;
 
-            return 0 if not $str;
-
             foreach my $p (@$BOT_HEADERS) {
                 if ( $str =~ $p ) {
                     return 1;
                 }
             }
 
-            return undef;
+            return 0;
         };
     }
 
@@ -214,31 +212,29 @@ sub register {
 
 =head1 Name
 
-Is::Bot
+Mojolicious::Plugin::IsBot
 
 =head1 Synopsis
 
-Is::Bot is a super simple way to test if a User-Agent header is possbily a bot.
+A super simple Mojolicious plugin to test if a User-Agent header is possbily a bot.
+
+Works by adding a C<is_bot> method to L<Mojo::Message::Request>.
 
 =head2 Example
 
-    use Is::Bot qw(is_bot);
-    is_bot('axios'); # true
-    is_bot('Mozilla/5.0 (X11; Linux x86_64; rv:109.0)'); # false
+    use Mojolicious::Lite -signatures;
 
-or
+    plugin('IsBot');
 
-    Is::Bot->is_bot('axios'); # true
+    get '/' => sub {
+        my $s = shift;
+        
+        return $s->render(text => 'You are bot!') if $s->req->is_bot;
+        
+        $s->render(text => 'You are not bot!');
+    };
 
-or
-
-    Is::Bot::is_bot('axios'); # true
-
-=head1 API
-
-=head2 is_bot
-
-Determines if the given string (only parameter) is a bot or not.
+    app->start;
 
 =head2 License
 
