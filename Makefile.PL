@@ -5,28 +5,35 @@ use utf8;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME         => 'Is::Bot',
-    VERSION_FROM => 'lib/Is/Bot.pm',
-    ABSTRACT     => qq{A Perl port of the JavaScript library 'isbot'.},
-    license      => 'artistic_2',
-    META_MERGE   => {
+    NAME         => 'Mojolicious::Plugin::IsBot',
+    VERSION_FROM => 'lib/Mojolicious/Plugin/IsBot.pm',
+    ABSTRACT     =>
+qq{A Mojolicious plugin that adds a helper to test if a request is a bot.},
+    license    => 'artistic_2',
+    META_MERGE => {
         dynamic_config => 0,
         'meta-spec'    => { version   => 2 },
         no_index       => { directory => [ 'examples', 't' ] },
-        prereqs        => { runtime   => { requires => { perl => '5.008' } } },
+        prereqs        => { runtime   => { requires => { perl => '5.016' } } },
         resources      => {
-            bugtracker =>
-              { web => 'https://github.com/rawleyfowler/Is-Bot/issues' },
+            bugtracker => {
+                web =>
+'https://github.com/rawleyfowler/mojolicious-plugin-IsBot/issues'
+            },
             license =>
               [qq{http://www.opensource.org/licenses/artistic-license-2.0}],
             repository => {
                 type => 'git',
-                url  => 'https://github.com/rawleyfowler/Is-Bot'
+                url  =>
+                  'https://github.com/rawleyfowler/mojolicious-plugin-IsBot'
             }
         },
     },
-    Prereq_PM => {
+    TEST_REQUIRES => {
         'Test::Simple' => '1.302195'
+    },
+    PREREQ_PM => {
+        'Mojolicious' => '9.00',
     },
     test => { TESTS => 't/*.t t/*/*.t it/*.t it/*/*.t' }
 );

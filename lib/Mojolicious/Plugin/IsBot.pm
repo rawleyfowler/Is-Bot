@@ -1,16 +1,13 @@
-use strict;
-use warnings;
+package Mojolicious::Plugin::IsBot;
 
-use utf8;
-
-use Exporter qw(import);
+use Mojo::Base 'Mojolicious::Plugin';
 
 our $VERSION = '0.001';
 
 our @EXPORT_OK = qw(is_bot);
 
 # Credits to: https://github.com/omrilotan/isbot
-my $list = [
+my $BOT_HEADERS = [
     qr/\sdaum[ \/]/,
     qr/\sdeusu\//,
     qr/\syadirectfetcher/,
@@ -188,13 +185,29 @@ my $list = [
     qr/zgrab/
 ];
 
-sub is_bot {
-    my $str = exists $_[1] ? $_[1] : $_[0];
-    foreach my $p (@$list) {
-        return 1 if $str =~ $p;
+sub register {
+    my $app = $_[1];
+
+    {
+        no warnings 'all';
+        no strict 'refs';
+        *{"Mojo::Message::Request::is_bot"} = sub {
+            my $self = shift;
+            my $str  = $self->headers->user_agent // shift;
+
+            return 0 if not $str;
+
+            foreach my $p (@$BOT_HEADERS) {
+                if ( $str =~ $p ) {
+                    return 1;
+                }
+            }
+
+            return undef;
+        };
     }
 
-    return undef;
+    return $_[0];
 }
 
 =encoding utf8
